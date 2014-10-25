@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app id="recordbase"
+		 version="1.0" 
+		 xmlns="http://java.sun.com/xml/ns/j2ee">
+
+	<display-name>Record Base</display-name>
+	<description>
+		Application for managing music, e-book, movie, etc. files across multiple devices
+	</description>
+
+	<servlet>
+		<servlet-name>MainServlet</servlet-name>
+		<servlet-class>MainServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>MainServlet</servlet-name>
+		<url-pattern>/MainServlet</url-pattern>
+	</servlet-mapping>
+
+</web-app>
