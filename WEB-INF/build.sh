@@ -77,7 +77,7 @@ fi
 
 if [ $cFlag -eq 1 ]; then
 	echo -n "Cleaning..."
-	rm -rf $buildPath/*
+	rm -rf $buildPath/
 	echo "done"
 fi
 
