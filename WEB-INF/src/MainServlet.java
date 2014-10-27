@@ -23,45 +23,54 @@ public class MainServlet extends HttpServlet {
     throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
-
-        final Part filePart = request.getPart("file");
-        final String fileName = getFileName(filePart);
-
+        
         PrintWriter writer = response.getWriter();
 
         writer.println("<html>");
         writer.println("<body>");
 
-        writer.println("<h1>Post Request Recieved</h1>");
-        writer.println("<h2>Recieved file: " + fileName + "</h2>");
+
+        writer.println("<h1>Upload Request Recieved</h1>");
+
+        final Part filePart = request.getPart("file");
+        final String fileName = getFileName(filePart);
+
+        if (fileName == null) {
+            writer.println("<h2>File not supplied in request</h2>");
+        } else {
+            writer.println("<h2>Recieved file: " + fileName + "</h2>");
+        }
+
 
         writer.println("</body>");
         writer.println("</html>");
 
 
-        OutputStream out = null;
-        InputStream fileContent = null;
+        // OutputStream out = null;
+        // InputStream fileContent = null;
 
-        try {
-            out = new FileOutputStream(new File(tempPath + File.separator + fileName));
-            fileContent = filePart.getInputStream();
+        // try {
+        //     out = new FileOutputStream(new File(tempPath + File.separator + fileName));
+        //     fileContent = filePart.getInputStream();
 
-            int read = 0;
-            final byte[] bytes = new byte[READ_SIZE_BYTES];
+        //     int read = 0;
+        //     final byte[] bytes = new byte[READ_SIZE_BYTES];
            
-            while ((read = fileContent.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
+        //     while ((read = fileContent.read(bytes)) != -1) {
+        //         out.write(bytes, 0, read);
+        //     }
 
-            writer.println("<br/> Created new file " + fileName + " at location" + tempPath + "<br/>");
-        } catch (FileNotFoundException e) {
-            writer.println("<br/>Failed to create file " + fileName + " at location" + tempPath + "<br/>");
-            writer.println("<br/>ERROR: " + e.getMessage() + "<br/>");
-        } finally {
-            if (out != null) { out.close(); }
-            if (fileContent != null) { fileContent.close(); }
-            if (writer != null) { writer.close(); }
-        }
+        //     writer.println("<br/> Created new file " + fileName + " at location" + tempPath + "<br/>");
+        // } catch (FileNotFoundException e) {
+        //     writer.println("<br/>Failed to create file " + fileName + " at location" + tempPath + "<br/>");
+        //     writer.println("<br/>ERROR: " + e.getMessage() + "<br/>");
+        // } finally {
+        //     if (out != null) { out.close(); }
+        //     if (fileContent != null) { fileContent.close(); }
+        //     if (writer != null) { writer.close(); }
+        // }
+
+        writer.close();
     }
 
 	@Override
@@ -90,8 +99,8 @@ public class MainServlet extends HttpServlet {
 
     }
 
-    private String getFileName(final Part part) {
-        for (String content : part.getHeader("content-disposition").split(";")) {
+    private String getFileName(final Part filePart) {
+        for (String content : filePart.getHeader("content-disposition").split(";")) {
             if (content.trim().startsWith("filename")) {
                 return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
