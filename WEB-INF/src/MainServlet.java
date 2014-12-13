@@ -22,6 +22,7 @@ public class MainServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) 
     throws ServletException, IOException {
 
+        // Setup response and confirm post request was recieved
         response.setContentType("text/html;charset=UTF-8");
         
         PrintWriter writer = response.getWriter();
@@ -32,16 +33,35 @@ public class MainServlet extends HttpServlet {
 
         writer.println("<h1>Upload Request Recieved</h1>");
 
-        final Part filePart = request.getPart("file");
-        final String fileName = getFileName(filePart);
 
-        if (fileName == null) {
-            writer.println("<h2>File not supplied in request</h2>");
+
+
+
+        String contentType = request.getHeader("Content-Type");
+        writer.println("<h2>Content-Type is " + contentType + "<h2>");
+
+
+        if (contentType.equals("application/x-www-form-urlencoded")) {
+            writer.println("got url encoded request");
+            // processUrlencodedRequest(request, response);
+
+        } else if (contentType.startsWith("multipart/form-data")) {
+            final Part filePart = request.getPart("file");
+            final String fileName = getFileName(filePart);
+
+            if (fileName == null) {
+                writer.println("<h2>File not supplied in request</h2>");
+            } else {
+                writer.println("<h2>Recieved file: " + fileName + "</h2>");
+            }
+
         } else {
-            writer.println("<h2>Recieved file: " + fileName + "</h2>");
+            writer.println("Unknown Content-Type");
         }
 
 
+
+        // Close html
         writer.println("</body>");
         writer.println("</html>");
 
@@ -73,6 +93,16 @@ public class MainServlet extends HttpServlet {
         writer.close();
     }
 
+    protected void processUrlencodedRequest(HttpServletRequest request, HttpServletResponse response) 
+    throws ServletException, IOException {
+
+    }
+
+    protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) 
+    throws ServletException, IOException {
+
+    }
+
 	@Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) 
     throws IOException, ServletException {
@@ -83,6 +113,8 @@ public class MainServlet extends HttpServlet {
         writer.println("<body>");
 
         writer.println("<h1>Get Request Recieved</h1>");
+
+
 
         writer.println("</body>");
         writer.println("</html>");
