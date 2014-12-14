@@ -3,15 +3,19 @@
     	<title>Uploader</title>
     </head>
     <body>
+
     	<h1>Uploader</h1>
+
     	<form method="POST" enctype="multipart/form-data" action="MainServlet">
 		    File to upload: <input type="file" name="file" id="file"><br/>
-		    <br/>
 		    <input type="submit" value="Upload" name="upload" id="upload">
 		</form>
 
-        <form method="POST" enctype="application/x-www-form-urlencoded" action="MainServlet">
-            <input type="submit" value="Register" name="register" id="register">
+        <form method="GET" action="MainServlet">
+            <input type="hidden" name="type" value="register">
+            Device Name: <input type="text" name="device" id="device"><br/>
+            <input type="submit" value="Register" id="register">
         </form>
+
     </body>
 </html>

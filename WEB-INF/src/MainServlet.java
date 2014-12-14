@@ -16,55 +16,70 @@ import javax.servlet.http.Part;
 @MultipartConfig
 public class MainServlet extends HttpServlet {
 
+    private final static String REQ_TYPE = "type";
+    private final static String REQ_TYPE_REGISTER = "register";
+
     private final static int READ_SIZE_BYTES = 1024;
     private final static String tempPath = "/Users/pairofham/Desktop/RecordBaseFiles";
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) 
+    private PrintWriter writer;
+    private void printLine(String line) {
+        writer.println(line + "<br/>");
+    }
+
+    protected void processGetRequest(HttpServletRequest request, HttpServletResponse response) 
     throws ServletException, IOException {
 
-        // Setup response and confirm post request was recieved
-        response.setContentType("text/html;charset=UTF-8");
-        
-        PrintWriter writer = response.getWriter();
+        String requestType = request.getParameter(REQ_TYPE);
+        assert(requestType != null);
 
-        writer.println("<html>");
-        writer.println("<body>");
+        if (requestType.equals(REQ_TYPE_REGISTER)) {
+            printLine("Got register request ");
+        } else {
+            assert(false);
+        }
+    }
 
-
-        writer.println("<h1>Upload Request Recieved</h1>");
-
-
-
+    protected void processPostRequest(HttpServletRequest request, HttpServletResponse response) 
+    throws ServletException, IOException {
 
 
         String contentType = request.getHeader("Content-Type");
-        writer.println("<h2>Content-Type is " + contentType + "<h2>");
+        assert(contentType != null);
+
+        printLine("Content-Type is " + contentType);
 
 
         if (contentType.equals("application/x-www-form-urlencoded")) {
-            writer.println("got url encoded request");
-            // processUrlencodedRequest(request, response);
-
+            processUrlencodedRequest(request, response);
         } else if (contentType.startsWith("multipart/form-data")) {
-            final Part filePart = request.getPart("file");
-            final String fileName = getFileName(filePart);
-
-            if (fileName == null) {
-                writer.println("<h2>File not supplied in request</h2>");
-            } else {
-                writer.println("<h2>Recieved file: " + fileName + "</h2>");
-            }
-
+            processMultipartRequest(request, response);
         } else {
-            writer.println("Unknown Content-Type");
+            printLine("Unknown Content-Type");
+            return;
         }
+    }
 
+    protected void processUrlencodedRequest(HttpServletRequest request, HttpServletResponse response) 
+    throws ServletException, IOException {
 
+        printLine("got url encoded request");
 
-        // Close html
-        writer.println("</body>");
-        writer.println("</html>");
+    }
 
+    protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) 
+    throws ServletException, IOException {
+
+        printLine("got multipart request");
+
+        final Part filePart = request.getPart("file");
+        final String fileName = getFileName(filePart);
+
+        if (fileName == null) {
+            printLine("File not supplied in request");
+        } else {
+            printLine("Recieved file: " + fileName);
+        }
 
         // OutputStream out = null;
         // InputStream fileContent = null;
@@ -87,33 +102,34 @@ public class MainServlet extends HttpServlet {
         // } finally {
         //     if (out != null) { out.close(); }
         //     if (fileContent != null) { fileContent.close(); }
-        //     if (writer != null) { writer.close(); }
         // }
-
-        writer.close();
     }
 
-    protected void processUrlencodedRequest(HttpServletRequest request, HttpServletResponse response) 
-    throws ServletException, IOException {
+    private String getFileName(final Part filePart) {
+        for (String content : filePart.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
 
-    }
-
-    protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) 
-    throws ServletException, IOException {
-
+        return null;
     }
 
 	@Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) 
     throws IOException, ServletException {
 
-    	PrintWriter writer = response.getWriter();
+        response.setContentType("text/html;charset=UTF-8");
+
+        writer = response.getWriter();
 
         writer.println("<html>");
         writer.println("<body>");
 
-        writer.println("<h1>Get Request Recieved</h1>");
+        writer.println("<h1>GET Request Recieved</h1>");
 
+
+        processGetRequest(request, response);
 
 
         writer.println("</body>");
@@ -127,17 +143,22 @@ public class MainServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException {
 
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        
+        writer = response.getWriter();
+        
+        writer.println("<html>");
+        writer.println("<body>");
 
-    }
+        writer.println("<h1>POST Request Recieved</h1>");
 
-    private String getFileName(final Part filePart) {
-        for (String content : filePart.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
 
-        return null;
+        processPostRequest(request, response);
+
+
+        writer.println("</body>");
+        writer.println("</html>");
+
+        writer.close();
     }
 }
