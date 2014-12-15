@@ -31,7 +31,7 @@ function displayUsage {
 # Compiles .java file argument using CLASSPATH environment variable
 # Puts resulting .class files in 
 function compileJava {
-	javac -d $buildPath $1
+	javac -d $buildPath -sourcepath $srcPath $1
 	if [ $? -ne 0 ]; then
 		exit $?
 	fi
@@ -67,12 +67,13 @@ if [ $bFlag -eq 1 ]; then
 
 	# Compile all .java files in $srcPath
 	echo "Compiling .java files..."
-	find $srcPath -name "*.java" | while read line
-	do
-		echo -ne "\t$line..."
-		compileJava $line
-		echo "done"
-	done
+	# find $srcPath -name "*.java" | while read line
+	# do
+	# 	echo -ne "\t$line..."
+	# 	compileJava $line
+	# 	echo "done"
+	# done
+	compileJava $srcPath/*.java
 fi
 
 if [ $cFlag -eq 1 ]; then

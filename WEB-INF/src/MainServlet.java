@@ -1,3 +1,5 @@
+
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.OutputStream;
@@ -16,153 +18,160 @@ import javax.servlet.http.Part;
 @MultipartConfig
 public class MainServlet extends HttpServlet {
 
-    private final static String REQ_TYPE = "type";
-    private final static String REQ_TYPE_REGISTER = "register";
+    // private final static String REQ_TYPE = "type";
+    // private final static String REQ_TYPE_REGISTER = "register";
 
-    private final static int READ_SIZE_BYTES = 1024;
-    private final static String tempPath = "/Users/pairofham/Desktop/RecordBaseFiles";
+    // private final static int READ_SIZE_BYTES = 1024;
+    // private final static String tempPath = "/Users/pairofham/Desktop/RecordBaseFiles";
 
-    private PrintWriter writer;
-    private void printLine(String line) {
-        writer.println(line + "<br/>");
-    }
+    // private PrintWriter writer;
+    // private void printLine(String line) {
+    //     writer.println(line + "<br/>");
+    // }
+
+    private RequestHandler handler;
 
     public void init() throws ServletException {
         
     }
 
-    protected void processGetRequest(HttpServletRequest request, HttpServletResponse response) 
-    throws ServletException, IOException {
+    // protected void processGetRequest(HttpServletRequest request, HttpServletResponse response) 
+    // throws ServletException, IOException {
 
-        String requestType = request.getParameter(REQ_TYPE);
-        assert(requestType != null);
+    //     String requestType = request.getParameter(REQ_TYPE);
+    //     assert(requestType != null);
 
-        if (requestType.equals(REQ_TYPE_REGISTER)) {
-            printLine("Got register request ");
-        } else {
-            assert(false);
-        }
-    }
+    //     if (requestType.equals(REQ_TYPE_REGISTER)) {
+    //         printLine("Got register request ");
+    //     } else {
+    //         assert(false);
+    //     }
+    // }
 
-    protected void processPostRequest(HttpServletRequest request, HttpServletResponse response) 
-    throws ServletException, IOException {
-
-
-        String contentType = request.getHeader("Content-Type");
-        assert(contentType != null);
-
-        printLine("Content-Type is " + contentType);
+    // protected void processPostRequest(HttpServletRequest request, HttpServletResponse response) 
+    // throws ServletException, IOException {
 
 
-        if (contentType.equals("application/x-www-form-urlencoded")) {
-            processUrlencodedRequest(request, response);
-        } else if (contentType.startsWith("multipart/form-data")) {
-            processMultipartRequest(request, response);
-        } else {
-            printLine("Unknown Content-Type");
-            return;
-        }
-    }
+    //     String contentType = request.getHeader("Content-Type");
+    //     assert(contentType != null);
 
-    protected void processUrlencodedRequest(HttpServletRequest request, HttpServletResponse response) 
-    throws ServletException, IOException {
+    //     printLine("Content-Type is " + contentType);
 
-        printLine("got url encoded request");
 
-    }
+    //     if (contentType.equals("application/x-www-form-urlencoded")) {
+    //         processUrlencodedRequest(request, response);
+    //     } else if (contentType.startsWith("multipart/form-data")) {
+    //         processMultipartRequest(request, response);
+    //     } else {
+    //         printLine("Unknown Content-Type");
+    //         return;
+    //     }
+    // }
 
-    protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) 
-    throws ServletException, IOException {
+    // protected void processUrlencodedRequest(HttpServletRequest request, HttpServletResponse response) 
+    // throws ServletException, IOException {
 
-        printLine("got multipart request");
+    //     printLine("got url encoded request");
 
-        final Part filePart = request.getPart("file");
-        final String fileName = getFileName(filePart);
+    // }
 
-        if (fileName == null) {
-            printLine("File not supplied in request");
-        } else {
-            printLine("Recieved file: " + fileName);
-        }
+    // protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) 
+    // throws ServletException, IOException {
 
-        // OutputStream out = null;
-        // InputStream fileContent = null;
+    //     printLine("got multipart request");
 
-        // try {
-        //     out = new FileOutputStream(new File(tempPath + File.separator + fileName));
-        //     fileContent = filePart.getInputStream();
+    //     final Part filePart = request.getPart("file");
+    //     final String fileName = getFileName(filePart);
 
-        //     int read = 0;
-        //     final byte[] bytes = new byte[READ_SIZE_BYTES];
+    //     if (fileName == null) {
+    //         printLine("File not supplied in request");
+    //     } else {
+    //         printLine("Recieved file: " + fileName);
+    //     }
+
+    //     // OutputStream out = null;
+    //     // InputStream fileContent = null;
+
+    //     // try {
+    //     //     out = new FileOutputStream(new File(tempPath + File.separator + fileName));
+    //     //     fileContent = filePart.getInputStream();
+
+    //     //     int read = 0;
+    //     //     final byte[] bytes = new byte[READ_SIZE_BYTES];
            
-        //     while ((read = fileContent.read(bytes)) != -1) {
-        //         out.write(bytes, 0, read);
-        //     }
+    //     //     while ((read = fileContent.read(bytes)) != -1) {
+    //     //         out.write(bytes, 0, read);
+    //     //     }
 
-        //     writer.println("<br/> Created new file " + fileName + " at location" + tempPath + "<br/>");
-        // } catch (FileNotFoundException e) {
-        //     writer.println("<br/>Failed to create file " + fileName + " at location" + tempPath + "<br/>");
-        //     writer.println("<br/>ERROR: " + e.getMessage() + "<br/>");
-        // } finally {
-        //     if (out != null) { out.close(); }
-        //     if (fileContent != null) { fileContent.close(); }
-        // }
-    }
+    //     //     writer.println("<br/> Created new file " + fileName + " at location" + tempPath + "<br/>");
+    //     // } catch (FileNotFoundException e) {
+    //     //     writer.println("<br/>Failed to create file " + fileName + " at location" + tempPath + "<br/>");
+    //     //     writer.println("<br/>ERROR: " + e.getMessage() + "<br/>");
+    //     // } finally {
+    //     //     if (out != null) { out.close(); }
+    //     //     if (fileContent != null) { fileContent.close(); }
+    //     // }
+    // }
 
-    private String getFileName(final Part filePart) {
-        for (String content : filePart.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
+    // private String getFileName(final Part filePart) {
+    //     for (String content : filePart.getHeader("content-disposition").split(";")) {
+    //         if (content.trim().startsWith("filename")) {
+    //             return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+    //         }
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
 	@Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) 
     throws IOException, ServletException {
 
-        response.setContentType("text/html;charset=UTF-8");
+        // response.setContentType("text/html;charset=UTF-8");
 
-        writer = response.getWriter();
+        // writer = response.getWriter();
 
-        writer.println("<html>");
-        writer.println("<body>");
+        // writer.println("<html>");
+        // writer.println("<body>");
 
-        writer.println("<h1>GET Request Recieved</h1>");
-
-
-        processGetRequest(request, response);
+        // writer.println("<h1>GET Request Recieved</h1>");
 
 
-        writer.println("</body>");
-        writer.println("</html>");
+        // processGetRequest(request, response);
 
-        writer.close();
 
+        // writer.println("</body>");
+        // writer.println("</html>");
+
+        // writer.close();
+
+        handler = new RequestHandler(RequestHandler.RequestMethod.GET, request, response);
+        handler.handleRequest();
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException {
 
-        response.setContentType("text/html;charset=UTF-8");
+        // response.setContentType("text/html;charset=UTF-8");
         
-        writer = response.getWriter();
+        // writer = response.getWriter();
         
-        writer.println("<html>");
-        writer.println("<body>");
+        // writer.println("<html>");
+        // writer.println("<body>");
 
-        writer.println("<h1>POST Request Recieved</h1>");
-
-
-        processPostRequest(request, response);
+        // writer.println("<h1>POST Request Recieved</h1>");
 
 
-        writer.println("</body>");
-        writer.println("</html>");
+        // processPostRequest(request, response);
 
-        writer.close();
+
+        // writer.println("</body>");
+        // writer.println("</html>");
+
+        // writer.close();
+
+        handler = new RequestHandler(RequestHandler.RequestMethod.POST, request, response);
+        handler.handleRequest();
     }
 }
