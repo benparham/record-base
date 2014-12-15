@@ -5,7 +5,7 @@
 # ================= Globals ==============
 
 # Various Paths
-tomcatJarPath="/Users/pairofham/apache-tomcat-7.0.47/lib/*"
+tomcatJarPath="/Users/pairofham/code_packages/apache-tomcat-7.0.47/lib/*"
 
 basePath="."
 srcPath="$basePath/src"

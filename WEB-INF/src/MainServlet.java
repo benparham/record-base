@@ -27,6 +27,10 @@ public class MainServlet extends HttpServlet {
         writer.println(line + "<br/>");
     }
 
+    public void init() throws ServletException {
+        
+    }
+
     protected void processGetRequest(HttpServletRequest request, HttpServletResponse response) 
     throws ServletException, IOException {
 
